@@ -1,0 +1,18 @@
+POST http://localhost:8080/orderItems/add
+Content-Type: application/json
+
+{
+    "items": [
+        {"652c15c8b564be14966b391c": "1"}, 
+        {"652cf8c58015de19aaa55f68": "1"}
+    ],
+    "menuListId": "65322a2d888f4865d8d30e84",
+    "orderedAt": "2023-10-25",
+    "paidAt": null,
+    "status": "Ordered",
+    "userId": "7gC3eEhEJFhIJCaDlBppafswdQ42"
+}
+
+###
+
+GET http://localhost:8080/fooditem/getall

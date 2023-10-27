@@ -1,20 +1,50 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { NavigationContainer } from '@react-navigation/native'
+import { useEffect,useState } from 'react';
+import Home from './screens/Home';
+import Login from './screens/Login';
+import { onAuthStateChanged } from 'firebase/auth';
+import { FIREBASE_AUTH } from './firebaseConfig';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Cart from './screens/Cart';
 
-export default function App() {
+const Stack = createNativeStackNavigator();
+const InsideStack = createNativeStackNavigator();
+
+const InsideLayout = () => {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+    <InsideStack.Navigator>
+      <InsideStack.Screen name='Home' component={Home} options={{ headerShown:false }} />
+      <InsideStack.Screen name='Cart' component={Cart} options={{ headerShown:false }} />
+    </InsideStack.Navigator>
+  )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function App() {
+
+  const [ user, setUser ] = useState(null)
+
+  useEffect(() => {
+    const getData = async () => {
+      await AsyncStorage.getItem('user').then((user) => {
+        if(user){
+          setUser(JSON.parse(user))
+          console.log(JSON.parse(user));
+        }
+      })
+    }
+    getData()
+    onAuthStateChanged(FIREBASE_AUTH,async (user) => {
+      await AsyncStorage.setItem('user',JSON.stringify(user))
+      setUser(user)
+    })
+  },[])
+
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        {user ? <Stack.Screen name="Inside" component={InsideLayout} options={{ headerShown:false }} /> : <Stack.Screen name="Login" component={Login} options={{ headerShown:false }} />}
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}

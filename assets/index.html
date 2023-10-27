@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Razorpay Payment</title>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+  <script>
+    var options = {
+      key: 'rzp_test_sPOK9AomtuSB9w',
+      amount: 100, // Amount in paise (e.g., 100 paise = 1 INR)
+      currency: 'INR',
+      name: 'Your Company Name',
+      description: 'Purchase Description',
+      image: 'https://example.com/your-logo.png',
+      order_id: 'order_MtFERON8elVNPw', // Replace with the actual order ID
+      handler: function (response) {
+        // Handle the payment response (success or failure)
+        if (response.razorpay_payment_id) {
+          // Payment success
+          window.ReactNativeWebView.postMessage('success');
+        } else {
+          // Payment failed
+          window.ReactNativeWebView.postMessage('failure');
+        }
+      },
+    };
+
+    var rzp = new Razorpay(options);
+    rzp.open();
+  </script>
+</body>
+</html>
